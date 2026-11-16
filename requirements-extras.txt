@@ -1,0 +1,4 @@
+# Optional backends: exercised in the CI "backends" and "embeddings" jobs, not needed for the demo.
+-r requirements.txt
+faiss-cpu>=1.8
+sentence-transformers>=3.0

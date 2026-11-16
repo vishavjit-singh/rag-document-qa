@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rag-document-qa"
+version = "1.0.0"
+description = "Retrieval-augmented Q&A over PDFs: layout-aware extraction, hybrid BM25 + dense retrieval, cited answers that abstain when unsure, and an evaluation harness."
+authors = [{ name = "Vishavjit Singh Saini" }]
+requires-python = ">=3.10"
+license = { text = "MIT" }
+readme = "README.md"
+
+[project.optional-dependencies]
+extras = ["faiss-cpu>=1.8", "sentence-transformers>=3.0"]
+
+[project.scripts]
+ragqa = "ragqa.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src", "."]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W"]

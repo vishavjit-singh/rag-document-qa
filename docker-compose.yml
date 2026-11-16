@@ -1,0 +1,16 @@
+# docker compose up --build   → API on http://localhost:8000  (FastAPI docs at /docs)
+# To index your own PDFs instead of the synthetic corpus, mount a folder over /app/data/corpus
+# and call POST /ingest.
+name: ragqa
+
+services:
+  api:
+    build: .
+    image: rag-document-qa:latest
+    ports: ["8000:8000"]
+    environment:
+      RAGQA_ANSWERER: extractive        # set to openai and pass OPENAI_API_KEY to use the LLM answerer
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 5s
+      retries: 10

@@ -1,0 +1,45 @@
+# Settings for ingestion, retrieval, answering and evaluation. Paths are relative to the repo root
+# (or $RAGQA_HOME). Environment overrides: RAGQA_EMBEDDER, RAGQA_INDEX, RAGQA_ANSWERER.
+paths:
+  corpus: data/corpus          # PDFs to index (`make demo` writes the SYNTHETIC corpus here)
+  gold: data/gold/qa.jsonl     # gold questions with document, page and answer span
+  index: data/index            # extraction cache, chunks, vectors, embedder state, manifest
+  reports: reports
+  images: docs/images
+
+extract:
+  engine: pdfplumber           # pdfplumber (layout-aware) | pypdf (plain-text fallback)
+
+chunking:
+  size: 120                    # words per chunk
+  overlap: 30                  # words shared with the previous chunk of the same section
+
+embedding:
+  backend: lsa                 # lsa | hashing | sentence-transformers
+  lsa_dims: 160
+  hashing_features: 2048
+  st_model: sentence-transformers/all-MiniLM-L6-v2
+
+index:
+  backend: auto                # auto (faiss if installed) | faiss | numpy
+
+retrieval:
+  mode: hybrid                 # bm25 | dense | hybrid (reciprocal rank fusion)
+  k: 5
+  candidates: 30               # per retriever, before fusion
+  rrf_k: 60
+  version_aware: true          # rank superseded versions after current ones unless the question names them
+  mmr: false
+  mmr_lambda: 0.7
+
+answer:
+  backend: extractive          # extractive | openai (needs OPENAI_API_KEY; never used by the demo or CI)
+  threshold: 0.45              # fallback; `eval` calibrates it on the dev split -> data/index/calibration.json
+  openai_model: gpt-4o-mini
+
+eval:
+  ks: [1, 2, 3, 5, 10]
+  dev_fraction: 0.5
+  seed: 7
+  chunk_sizes: [40, 60, 90, 120, 180, 260]
+  sample_questions: [te05, te13, na04]   # a current-version answer, an old-version answer, an abstention
