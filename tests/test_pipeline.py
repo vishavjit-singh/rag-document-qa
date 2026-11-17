@@ -25,6 +25,9 @@ def test_evaluation_end_to_end(cfg):
 def test_cli_ask_and_report(cfg, project, tmp_path, monkeypatch):
     from ragqa.cli import cli
 
+    # Paths in ragqa.yaml resolve against ROOT ($RAGQA_HOME or the repo), not the config file's folder,
+    # so point ROOT at the temporary project instead of a data/ left behind by `make demo`.
+    monkeypatch.setattr("ragqa.config.ROOT", project)
     monkeypatch.setenv("RAGQA_EMBEDDER", "lsa")
     monkeypatch.setenv("RAGQA_INDEX", "numpy")
     monkeypatch.setenv("RAGQA_ANSWERER", "extractive")
